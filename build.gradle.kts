@@ -17,6 +17,14 @@ java {
     }
 }
 
+dependencies {
+    // Database
+    implementation("com.h2database:h2:2.2.224")
+    
+    // JSON handling (for potential API)
+    implementation("com.google.code.gson:gson:2.10.1")
+}
+
 javafx {
     version = "21.0.7"
     modules = listOf("javafx.controls")

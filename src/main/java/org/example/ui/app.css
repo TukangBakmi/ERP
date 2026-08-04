@@ -1,0 +1,14 @@
+/* Shared application styles placed next to UI classes (fallback for classpath)
+   Loaded as /org/example/ui/app.css */
+.root { -fx-font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+.header { -fx-background-color: linear-gradient(#0B1220, #0F172A); -fx-padding: 14 24 14 24; }
+.sidebar { -fx-background-color: #071124; -fx-padding: 18; }
+.menu-title { -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #94A3B8; }
+.menu-button { -fx-background-color: transparent; -fx-text-fill: #CFE8FF; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; }
+.menu-button:hover { -fx-background-color: rgba(255,255,255,0.04); -fx-text-fill: white; }
+.card { -fx-background-color: white; -fx-background-radius: 8; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.06), 8, 0.0, 0, 2); }
+.content-panel { -fx-background-color: white; -fx-border-color: #E6EEF8; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 16; }
+.btn-primary { -fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 12; }
+.btn-success { -fx-background-color: #10B981; -fx-text-fill: white; }
+.btn-danger  { -fx-background-color: #DC2626;  -fx-text-fill: white; }
+.btn-warning { -fx-background-color: #F59E0B;  -fx-text-fill: white; }

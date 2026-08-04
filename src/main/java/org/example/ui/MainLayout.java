@@ -198,6 +198,14 @@ public class MainLayout {
         root.setLeft(sidebar);
         root.setCenter(contentArea);
 
+        // load shared css if available
+        try {
+            root.getStylesheets().add(getClass().getResource("/org/example/ui/app.css").toExternalForm());
+        } catch (Exception ignored) {}
+
+        // responsive sidebar width (18% of window)
+        sidebar.prefWidthProperty().bind(root.widthProperty().multiply(0.18));
+
         return root;
     }
 
