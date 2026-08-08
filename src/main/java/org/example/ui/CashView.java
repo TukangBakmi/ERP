@@ -26,58 +26,44 @@ public class CashView {
         BorderPane root = new BorderPane();
         kasDAO = new KasDAO();
 
-        Label title = new Label("Kas & Keuangan");
-        title.setStyle("""
-                -fx-font-size: 24px;
-                -fx-font-weight: bold;
-                -fx-text-fill: #1E293B;
-                """);
+        Label title = ModernUIHelper.createTitleLabel("💵 Kas & Keuangan");
+        Label description = ModernUIHelper.createSubtitleLabel("Pantau saldo kas, pemasukan, dan pengeluaran dengan detail");
 
-        Label description = new Label("Pantau saldo kas, pemasukan, dan pengeluaran.");
-        description.setStyle("""
-                -fx-font-size: 13px;
-                -fx-text-fill: #64748B;
-                """);
-
-        Button addEntry = new Button("+ Catat Transaksi");
-        addEntry.setStyle("""
-                -fx-background-color: #DC2626;
-                -fx-text-fill: white;
-                -fx-font-weight: bold;
-                -fx-padding: 8 12;
-                -fx-cursor: hand;
-                """);
+        Button addEntry = new Button("➕ Catat Transaksi Baru");
+        ModernUIHelper.applyPrimaryButtonHover(addEntry);
         
         addEntry.setOnAction(e -> showAddTransactionDialog());
 
-        HBox topBar = new HBox(12, new VBox(4, title, description));
+        HBox topBar = new HBox();
         topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPadding(new Insets(20));
+        topBar.setPadding(new Insets(28, 32, 28, 32));
+        topBar.setSpacing(20);
 
-        HBox spacer = new HBox();
-        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-        topBar.getChildren().addAll(spacer, addEntry);
+        VBox titleBox = new VBox(5, title, description);
+        HBox.setHgrow(titleBox, Priority.ALWAYS);
+        topBar.getChildren().addAll(titleBox, addEntry);
 
         // Balance Card
         balanceLabel = new Label("Rp 0");
         balanceLabel.setStyle("""
-                -fx-font-size: 32px;
-                -fx-font-weight: bold;
+                -fx-font-size: 36px;
+                -fx-font-weight: 900;
                 -fx-text-fill: #10B981;
                 """);
 
-        Label balanceTitle = new Label("Saldo Kas");
-        balanceTitle.setStyle("-fx-font-size: 14px; -fx-text-fill: #64748B;");
+        Label balanceTitle = new Label("💰 Saldo Kas");
+        balanceTitle.setStyle("-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #64748B;");
 
         VBox balanceCard = new VBox(10, balanceTitle, balanceLabel);
-        balanceCard.setPadding(new Insets(20));
+        balanceCard.setPadding(new Insets(24));
         balanceCard.setStyle("""
-                -fx-background-color: white;
-                -fx-border-color: #E2E8F0;
-                -fx-border-radius: 8;
-                -fx-background-radius: 8;
+                -fx-background-color: linear-gradient(to bottom right, #ECFDF5, #F0FDF4);
+                -fx-border-color: #10B98144;
+                -fx-border-radius: 12;
+                -fx-background-radius: 12;
+                -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0.0, 0, 2);
                 """);
-        balanceCard.setPrefWidth(250);
+        balanceCard.setPrefWidth(280);
 
         // Table
         table = new TableView<>();
@@ -85,16 +71,17 @@ public class CashView {
 
         VBox tableContent = new VBox(table);
         tableContent.setAlignment(Pos.CENTER);
-        tableContent.setPadding(new Insets(12));
+        tableContent.setPadding(new Insets(16));
+        tableContent.setStyle(ModernUIHelper.CARD_CONTAINER);
 
         VBox content = new VBox(20, balanceCard, tableContent);
-        content.setPadding(new Insets(12));
+        content.setPadding(new Insets(16));
 
-        BorderPane.setMargin(content, new Insets(0, 20, 20, 20));
+        BorderPane.setMargin(content, new Insets(0, 32, 32, 32));
 
         root.setTop(topBar);
         root.setCenter(new ScrollPane(content));
-        root.setStyle("-fx-background-color: #F8FAFC;");
+        root.setStyle(ModernUIHelper.PAGE_BACKGROUND);
 
         refreshTable();
 

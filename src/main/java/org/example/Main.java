@@ -3,12 +3,17 @@ package org.example;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.data.DatabaseManager;
+import org.example.data.SampleDataInitializer;
 import org.example.ui.MainLayout;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+        // Initialize database and sample data
+        DatabaseManager.getInstance();
+        SampleDataInitializer.initializeSampleData();
 
         MainLayout mainLayout = new MainLayout();
 

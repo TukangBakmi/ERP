@@ -22,33 +22,16 @@ public class SupplierView {
         BorderPane root = new BorderPane();
         supplierDAO = new SupplierDAO();
 
-        Label title = new Label("Data Supplier");
-        title.setStyle("""
-                -fx-font-size: 24px;
-                -fx-font-weight: bold;
-                -fx-text-fill: #1E293B;
-                """);
+        Label title = ModernUIHelper.createTitleLabel("🏭 Data Supplier");
+        Label description = ModernUIHelper.createSubtitleLabel("Kelola informasi supplier: kontak, alamat, dan transaksi");
 
-        Label description = new Label("Kelola informasi supplier: kontak, alamat, dan transaksi.");
-        description.setStyle("""
-                -fx-font-size: 13px;
-                -fx-text-fill: #64748B;
-                """);
-
-        Button addButton = new Button("+ Tambah Supplier");
-        addButton.setStyle("""
-                -fx-background-color: #10B981;
-                -fx-text-fill: white;
-                -fx-font-weight: bold;
-                -fx-padding: 8 12;
-                -fx-cursor: hand;
-                """);
-        
+        Button addButton = new Button("➕ Tambah Supplier Baru");
+        ModernUIHelper.applyPrimaryButtonHover(addButton);
         addButton.setOnAction(e -> showAddSupplierDialog());
 
         HBox topBar = new HBox(12, new VBox(4, title, description));
         topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPadding(new Insets(20));
+        topBar.setPadding(new Insets(28, 32, 28, 32));
 
         HBox spacer = new HBox();
         HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
@@ -59,15 +42,14 @@ public class SupplierView {
 
         VBox content = new VBox(table);
         content.setAlignment(Pos.CENTER);
-        content.setPadding(new Insets(12));
-        content.getStyleClass().add("content-panel");
+        content.setPadding(new Insets(16));
+        content.setStyle(ModernUIHelper.CARD_CONTAINER);
 
-        BorderPane.setMargin(content, new Insets(0, 20, 20, 20));
+        BorderPane.setMargin(content, new Insets(0, 32, 32, 32));
 
         root.setTop(topBar);
         root.setCenter(content);
-        root.getStyleClass().add("root");
-        root.setStyle("-fx-background-color: #F8FAFC;");
+        root.setStyle(ModernUIHelper.PAGE_BACKGROUND);
 
         refreshTable();
 
@@ -88,20 +70,32 @@ public class SupplierView {
         colContact.setPrefWidth(180);
 
         TableColumn<Supplier, Void> colAction = new TableColumn<>("Aksi");
-        colAction.setPrefWidth(120);
+        colAction.setPrefWidth(130);
         colAction.setCellFactory(col -> new TableCell<Supplier, Void>() {
-            private final Button editBtn = new Button("Edit");
-            private final Button delBtn = new Button("Hapus");
+            private final Button editBtn = new Button("✏️ Edit");
+            private final Button delBtn = new Button("🗑️ Hapus");
 
             {
-                editBtn.setStyle("-fx-padding: 4 8; -fx-font-size: 11;");
-                delBtn.setStyle("-fx-padding: 4 8; -fx-font-size: 11; -fx-text-fill: white; -fx-background-color: #DC2626;");
+                editBtn.setStyle(ModernUIHelper.BTN_EDIT);
+                delBtn.setStyle(ModernUIHelper.BTN_DELETE);
+                
+                editBtn.setOnMouseEntered(e -> editBtn.setStyle(ModernUIHelper.BTN_EDIT_HOVER));
+                editBtn.setOnMouseExited(e -> editBtn.setStyle(ModernUIHelper.BTN_EDIT));
+                
+                delBtn.setOnMouseEntered(e -> delBtn.setStyle(ModernUIHelper.BTN_DELETE_HOVER));
+                delBtn.setOnMouseExited(e -> delBtn.setStyle(ModernUIHelper.BTN_DELETE));
                 
                 editBtn.setOnAction(e -> showEditSupplierDialog(getTableView().getItems().get(getIndex())));
                 delBtn.setOnAction(e -> {
                     Supplier s = getTableView().getItems().get(getIndex());
-                    supplierDAO.delete(s.getId());
-                    refreshTable();
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Konfirmasi Hapus");
+                    confirm.setHeaderText(null);
+                    confirm.setContentText("Yakin ingin menghapus supplier \"" + s.getName() + "\"?");
+                    if (confirm.showAndWait().get() == ButtonType.OK) {
+                        supplierDAO.delete(s.getId());
+                        refreshTable();
+                    }
                 });
             }
 
@@ -111,7 +105,8 @@ public class SupplierView {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    HBox actions = new HBox(5, editBtn, delBtn);
+                    HBox actions = new HBox(8, editBtn, delBtn);
+                    actions.setAlignment(Pos.CENTER);
                     setGraphic(actions);
                 }
             }
@@ -128,29 +123,36 @@ public class SupplierView {
 
     private void showAddSupplierDialog() {
         Dialog<Supplier> dialog = new Dialog<>();
-        dialog.setTitle("Tambah Supplier");
-        dialog.setHeaderText("Masukkan Data Supplier Baru");
+        dialog.setTitle("Tambah Supplier Baru");
+        dialog.setHeaderText("➕ Masukkan Data Supplier");
 
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setHgap(12);
+        grid.setVgap(14);
         grid.setPadding(new Insets(20));
+        grid.setStyle("-fx-font-size: 13px;");
 
         TextField namaField = new TextField();
+        namaField.setPromptText("Cth: PT. Sumber Spare");
+        namaField.setStyle(ModernUIHelper.INPUT_FIELD);
+        
         TextField contactField = new TextField();
+        contactField.setPromptText("Cth: 0812-3456-7890 / supplier@company.com");
+        contactField.setStyle(ModernUIHelper.INPUT_FIELD);
 
-        grid.add(new Label("Nama Supplier:"), 0, 0);
+        grid.add(ModernUIHelper.createFormLabel("Nama Supplier *"), 0, 0);
         grid.add(namaField, 1, 0);
-        grid.add(new Label("Kontak:"), 0, 1);
+        grid.add(ModernUIHelper.createFormLabel("Kontak *"), 0, 1);
         grid.add(contactField, 1, 1);
 
         dialog.getDialogPane().setContent(grid);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        ModernUIHelper.styleDialogButtons(dialog);
 
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
                 if (namaField.getText().isEmpty() || contactField.getText().isEmpty()) {
-                    showError("Semua field harus diisi!");
+                    showError("Nama supplier dan kontak harus diisi!");
                     return null;
                 }
                 Supplier s = new Supplier(0, namaField.getText(), contactField.getText());
@@ -167,28 +169,33 @@ public class SupplierView {
     private void showEditSupplierDialog(Supplier supplier) {
         Dialog<Supplier> dialog = new Dialog<>();
         dialog.setTitle("Edit Supplier");
-        dialog.setHeaderText("Edit Data Supplier");
+        dialog.setHeaderText("✏️ Edit Data Supplier");
 
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setHgap(12);
+        grid.setVgap(14);
         grid.setPadding(new Insets(20));
+        grid.setStyle("-fx-font-size: 13px;");
 
         TextField namaField = new TextField(supplier.getName());
+        namaField.setStyle(ModernUIHelper.INPUT_FIELD);
+        
         TextField contactField = new TextField(supplier.getContact());
+        contactField.setStyle(ModernUIHelper.INPUT_FIELD);
 
-        grid.add(new Label("Nama Supplier:"), 0, 0);
+        grid.add(ModernUIHelper.createFormLabel("Nama Supplier *"), 0, 0);
         grid.add(namaField, 1, 0);
-        grid.add(new Label("Kontak:"), 0, 1);
+        grid.add(ModernUIHelper.createFormLabel("Kontak *"), 0, 1);
         grid.add(contactField, 1, 1);
 
         dialog.getDialogPane().setContent(grid);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        ModernUIHelper.styleDialogButtons(dialog);
 
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
                 if (namaField.getText().isEmpty() || contactField.getText().isEmpty()) {
-                    showError("Semua field harus diisi!");
+                    showError("Nama supplier dan kontak harus diisi!");
                     return null;
                 }
                 Supplier updated = new Supplier(supplier.getId(), namaField.getText(), contactField.getText());
@@ -204,9 +211,10 @@ public class SupplierView {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        alert.setTitle("⚠️ Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().setStyle("-fx-font-size: 13px;");
         alert.showAndWait();
     }
 }
